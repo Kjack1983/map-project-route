@@ -5,19 +5,15 @@
 
 ## Tech stack: #babel #nodejs #express #mocha #chai
 
-# Consuming application
-Click here to see the front end application [popeye-routes-client](https://github.com/Kjack1983/popeye-routes-client)
-
-
-![popeye-routes](/screenshots/screenshot1.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot2.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot3.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot4.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot5.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot6.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot7.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot8.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot9.png?raw=true "images")
+![map-project-route](/screenshots/screenshot1.png?raw=true "images")
+![map-project-route](/screenshots/screenshot2.png?raw=true "images")
+![map-project-route](/screenshots/screenshot3.png?raw=true "images")
+![map-project-route](/screenshots/screenshot4.png?raw=true "images")
+![map-project-route](/screenshots/screenshot5.png?raw=true "images")
+![map-project-route](/screenshots/screenshot6.png?raw=true "images")
+![map-project-route](/screenshots/screenshot7.png?raw=true "images")
+![map-project-route](/screenshots/screenshot8.png?raw=true "images")
+![map-project-route](/screenshots/screenshot9.png?raw=true "images")
 
 ## Available Scripts
 
