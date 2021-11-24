@@ -19,16 +19,17 @@ sudo docker-compose up
 sudo docker ps (@see containers)
 ```
 
-The server and client side react application should be up and running by now. You should be able to see the application on localhost (http://localhost:3001/). However it will not work because our mongo database is empty at this point. So you could either use postman and make two POST HTTP requests or directly inside the main root project (map-project) run the following command below.
+The server and client side react application should be up and running by now. You should be able to see the application on localhost (http://localhost:3001/). However it will not work because our mongo database is empty at this point. So you could either use postman and make two POST HTTP requests or directly inside the main root project (map-project) run the following command below which will import the dump db into your remote mongo docker container.
 
 ```
 mongorestore --uri 'mongodb://mongo:27017/popeyedb' --archive=popeyedb --gzip
 ```
 
-Alternatively you could make the two post requests below:
+Alternatively if you are facing issues with your mongodb connection you could make the two simple POST requests below:
 
 http://localhost:3006/api/popeye/  POST CRUD operation
 
+![map-project-route](/screenshots/postman.png?raw=true "images")
 
 ```
 1)
@@ -220,18 +221,18 @@ Integration tests are also developed for the purpose of this project in order to
 `npm run` test or `npm run coverage` will automatically check the routes and the expected properties from the server response. It will also create a new route with POST http request, then UPDATE and delete that entry.
 
 # Consuming application
-Click here to see the front end application [popeye-routes-client](https://github.com/Kjack1983/popeye-routes-client)
+Click here to see the front end application [map-client](https://github.com/Kjack1983/map-project-route/tree/master/map-client)
 
 
-![popeye-routes](/screenshots/screenshot1.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot2.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot3.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot4.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot5.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot6.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot7.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot8.png?raw=true "images")
-![popeye-routes](/screenshots/screenshot9.png?raw=true "images")
+![map-project-route](/screenshots/screenshot1.png?raw=true "images")
+![map-project-route](/screenshots/screenshot2.png?raw=true "images")
+![map-project-route](/screenshots/screenshot3.png?raw=true "images")
+![map-project-route](/screenshots/screenshot4.png?raw=true "images")
+![map-project-route](/screenshots/screenshot5.png?raw=true "images")
+![map-project-route](/screenshots/screenshot6.png?raw=true "images")
+![map-project-route](/screenshots/screenshot7.png?raw=true "images")
+![map-project-route](/screenshots/screenshot8.png?raw=true "images")
+![map-project-route](/screenshots/screenshot9.png?raw=true "images")
 
 ## Available Scripts
 
