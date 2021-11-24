@@ -50,15 +50,10 @@ export const useGetPaths = () => {
 					if (response.ok) {
 						let data = await response.json();
 
-						console.log(data);
-
 						setRoutes({
 							loading: false, 
 							data
 						});
-
-
-      					console.log('%c%s', 'color: #d90000', 'data >>>', data);
 
 						// Store first route as default.
 						setSelectedPath(data[0].route);
