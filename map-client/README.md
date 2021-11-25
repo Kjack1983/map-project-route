@@ -8,12 +8,8 @@
 ![map-project-route](/screenshots/screenshot1.png?raw=true "images")
 ![map-project-route](/screenshots/screenshot2.png?raw=true "images")
 ![map-project-route](/screenshots/screenshot3.png?raw=true "images")
-![map-project-route](/screenshots/screenshot4.png?raw=true "images")
 ![map-project-route](/screenshots/screenshot5.png?raw=true "images")
-![map-project-route](/screenshots/screenshot6.png?raw=true "images")
 ![map-project-route](/screenshots/screenshot7.png?raw=true "images")
-![map-project-route](/screenshots/screenshot8.png?raw=true "images")
-![map-project-route](/screenshots/screenshot9.png?raw=true "images")
 
 
 ## Available Scripts
