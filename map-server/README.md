@@ -3,7 +3,7 @@
 ## Branches
 * `master`
 
-## Tech stack: #babel #nodejs #express #mocha #chai
+## Tech stack: #babel #nodejs #express #mocha #chai #dockers, socketIO
 
 ![map-project-route](/screenshots/screenshot1.png?raw=true "images")
 ![map-project-route](/screenshots/screenshot2.png?raw=true "images")
