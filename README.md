@@ -27,7 +27,7 @@ mongorestore --uri 'mongodb://mongo:27017/popeyedb' --archive=popeyedb --gzip
 
 Alternatively if you are facing issues with your mongodb connection you could make the two simple POST requests below:
 
-http://localhost:3006/api/popeye/  POST CRUD operation
+http://localhost:3006/api/popeye/  POST CRUD operation. `Please keep the exact order for the purpose of this task`.
 
 ![map-project-route](/screenshots/postman.png?raw=true "images")
 
@@ -222,6 +222,19 @@ Integration tests are also developed for the purpose of this project in order to
 
 # Consuming application
 Click here to see the front end application [map-client](https://github.com/Kjack1983/map-project-route/tree/master/map-client)
+
+## Functionality
+The application consists of 5 sections and one down below where the map exists.
+
+1) first section contains a dropdown where the user can switch theme maps
+
+2) second section there is dropdown where the user can switch routes manually (on change event)
+
+3) Third section contains a drop down with a list of seconds to provide the time cover of each route travel. Switching seconds on the list will also change the time interval for each route trip. `Therefore in order to test properly` at the beginning please press start timer and you will be able to see `the routes and the icons displayed for each route`. Please note that when the time changes from the dropdown the icons will appear into the maps. this because the points are not coming from the map (Mainly developed from the front end side).
+
+4) Timer section contains two buttons, One for setting a timer `set timer` and `remove timer`. The set timer will start the trip at a default case of `3000` milliseconds (whole trip) and this will be devided by a set of timeouts by 3, 1 for each route please check `controller/paths.js`. In addition when the `set timer` is clicked the `Seconds drodown menu list` disappers. This is to avoid further implementation with the combination. Please note that when the `remove timer` is clicked then the trip will stop (meaning clearing the time interval and timeouts) via websockets SocketIO.
+
+5) The last section provides the time cover distance. At the top is the `time distance for each route` and at the botton is the `trip time` which demonstrates the time for each trip (Village - Lunch - Village).
 
 
 ![map-project-route](/screenshots/screenshot1.png?raw=true "images")
