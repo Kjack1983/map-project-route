@@ -1,6 +1,6 @@
-# Popeye's Routes
+# Map client side application
 
-## Tech stack: #react, #materialUI, mapBox, SocketIO.
+## Tech stack: #react, #react-hooks, #materialUI, mapBox, SocketIO.
 
 ## Branches
 * `master`
