@@ -6,7 +6,7 @@ const useConstructPoints = (socket) => {
     const [points, setPoints] = useState({});
 
     const fetchCoordinates = useCallback((data) => {
-		setMyCoordinates(data);
+        setMyCoordinates(data);
 
         const myPoints = data.reduce((acc, curr, index) => {
             return {
@@ -21,8 +21,6 @@ const useConstructPoints = (socket) => {
                 }
             };
         }, {})
-
-        console.log(myPoints);
 
         setPoints(myPoints)
 
