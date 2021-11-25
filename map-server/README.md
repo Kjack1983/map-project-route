@@ -1,4 +1,4 @@
-# Popeye Routes
+# Map server application
 
 ## Branches
 * `master`
