@@ -202,8 +202,9 @@ http://localhost:3006/api/popeye/  POST CRUD operation. `Please keep the exact o
         }
     }
 }
-
+```
 if you still facing issues with running the docker containers. Please change the .env file of the map-server project and more specifically the following variable below:
+
 
 ```
 DATABASE=mongodb://mongo:27017/popeyedb
@@ -214,10 +215,7 @@ to
 DATABASE=localhost://mongo:27017/popeyedb
 ```
 
-Then run the POST requests mentioned above locally to fill in your mongodb database.
-
-
-and run the application locally.
+Then run the POST requests mentioned above locally to fill in your mongodb database and run the application locally.
 
 ```
 ## CRUD operations are also developed for the purpose of this project
