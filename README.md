@@ -213,7 +213,7 @@ DATABASE=mongodb://mongo:27017/popeyedb
 to:
 
 ```
-DATABASE=localhost://mongo:27017/popeyedb
+DATABASE=mongodb://localhost:27017/popeyedb
 ```
 
 Then run the POST requests mentioned above locally to fill in your mongodb database and run the application locally.
