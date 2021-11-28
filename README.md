@@ -205,11 +205,12 @@ http://localhost:3006/api/popeye/  POST CRUD operation. `Please keep the exact o
 ```
 if you still facing issues with running the docker containers. Please change the .env file of the map-server project and more specifically the following variable below:
 
+from:
 
 ```
 DATABASE=mongodb://mongo:27017/popeyedb
 ```
-to
+to:
 
 ```
 DATABASE=localhost://mongo:27017/popeyedb
