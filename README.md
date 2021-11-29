@@ -218,9 +218,10 @@ DATABASE=mongodb://localhost:27017/popeyedb
 
 Then run the POST requests mentioned above locally to fill in your mongodb database and run the application locally.
 
-```
 ## CRUD operations are also developed for the purpose of this project
+
 ```
+
 1) getPaths GET http://localhost:3006/api/popeye/
 2) addPath POST http://localhost:3006/api/popeye/
 
