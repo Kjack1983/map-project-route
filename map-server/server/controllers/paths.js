@@ -3,9 +3,13 @@
 // @access public
 import PopeyeRoutes from '../models/popeye';
 import routeData from '../config/routedata';
+import path from 'path';
 import "babel-polyfill";
 import { io } from '../bin/www';
+import fs from 'fs';
 import moment from 'moment';
+let pathToFile = __dirname.replace('/dist-server/controllers', '/server/config/routedata.js');
+let updatedRouteData = routeData;
 
 let interval;
 let delay = 3000;
@@ -14,6 +18,7 @@ let coordinateRoutes = [];
 let currentTime;
 let tripTime;
 let additionTime;
+
 /**
  * Set timer for Routes algorithm third of
  * delay interval for each route.
@@ -129,6 +134,7 @@ const processRoutes = (routes = [], socket = {}) => {
  * @param {function} next
  */
 export const getPaths = async (req, res, next) => {
+    console.log('my Route data >>>>', updatedRouteData)
     try {
         let popeyes = await PopeyeRoutes.find({});
        
@@ -138,12 +144,14 @@ export const getPaths = async (req, res, next) => {
             streamData(popeyes);
             res.status(200).json(popeyes);
             next();
-        } else {
+        } else if(updatedRouteData.length) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-            streamData(routeData);
-            res.status(200).json(routeData);
+            streamData(updatedRouteData);
+            res.status(200).json(updatedRouteData);
             next();
+        } else {
+            throw new Error('No routes were found');
         }
     } catch(error) {
         next(error);
@@ -159,16 +167,23 @@ export const getPaths = async (req, res, next) => {
  */
  export const getPath = async (req, res, next) => {
     let { id } = req.params;
+
     try {
         let popeyeRoute = await PopeyeRoutes.findById({_id: id});
+        const route = updatedRouteData.find(data => data._id === id);
 
-        if (popeyeRoute) {
+        if (Object.keys(popeyeRoute).length) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.status(200).json(popeyeRoute);
             next();
+        } else if (Object.keys(route).length) {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).json(route);
+            next();
         } else {
-            throw new Error('ERROR: no entities found');
+            throw new Error('No route was found');
         }
     } catch(error) {
         next(error);
@@ -184,16 +199,34 @@ export const getPaths = async (req, res, next) => {
  */
 export const addPopeye = async (req, res, next) => {
     let { body } = req;
-
     try {
+        // save to file.
+        if(updatedRouteData.find(route => route.name === 'new')) {
+            console.log('%c%s', 'color: #ff0000', 'FOUND no need to write into file');
+        } else {
+            updatedRouteData = [...updatedRouteData, body];
+            const fileObj = 'export default ' + JSON.stringify(updatedRouteData);
+            fs.chmod(pathToFile, 0o644, (error) => {
+                fs.writeFile(pathToFile, fileObj, (err, routeFile) => {
+                    if(err) return console.err(err)
+                    console.log(routeFile);
+                    console.log('Changed file permissions');
+                });
+            });
+        }
+
         let popeye = await PopeyeRoutes.create(body);
-        if (popeye) {
+
+        if (Object.keys(popeye).length) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.status(200).json(popeye);
             next();
-        } else {
-            throw new Error('Entity was not stored');
+        } else if(Object.keys(updatedRouteData).length) {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).json(updatedRouteData);
+            next();
         }
     } catch (error) {
         next(error);
@@ -204,8 +237,22 @@ export const deletePopeye = async (req, res, next) => {
     let { id } = req.params;
 
     try {
+        // Should be the id but we are doing it for demonstrated purposes here.
+        updatedRouteData = updatedRouteData.filter(route => route.name !== 'new');
+        const fileObj = 'export default ' + JSON.stringify(updatedRouteData);
+
+        fs.chmod(pathToFile, 0o644, (error) => {
+            fs.writeFile(pathToFile, fileObj, (err, routeFile) => {
+                if(err) return console.err(err)
+                console.log('File was successfully stored');
+            });
+
+            console.log('Changed file permissions');
+        });
+        
         // Find By id and remove.
         let popeye = await PopeyeRoutes.findByIdAndRemove({_id: id});
+
         if (popeye) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
