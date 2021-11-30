@@ -19,7 +19,9 @@ sudo docker-compose up
 sudo docker ps (@see containers)
 ```
 
-The server and client side react application should be up and running by now. You should be able to see the application on localhost (http://localhost:3001/). 
+The folling command able will build the docker containers for the server, client and mongodb instances and will also insert data into the remote database. For any reason the database fails to load then will fallback to local data routes store in a file please check `server/ config/routedata.js`.
+
+The server and client side react application should be up and running by now. You should be able to see the application loading on localhost (http://localhost:3001/). 
 
 if you are facing issues with running the docker containers. Please change the .env file variable to the following below:
 
