@@ -8,6 +8,9 @@ import "babel-polyfill";
 import { io } from '../bin/www';
 import fs from 'fs';
 import moment from 'moment';
+
+let ObjectID = require('mongodb').ObjectID;
+let objectId = new ObjectID();
 let pathToFile = __dirname.replace('/dist-server/controllers', '/server/config/routedata.js');
 let updatedRouteData = routeData;
 
@@ -134,7 +137,6 @@ const processRoutes = (routes = [], socket = {}) => {
  * @param {function} next
  */
 export const getPaths = async (req, res, next) => {
-    console.log('my Route data >>>>', updatedRouteData)
     try {
         let popeyes = await PopeyeRoutes.find({});
        
@@ -201,9 +203,10 @@ export const addPopeye = async (req, res, next) => {
     let { body } = req;
     try {
         // save to file.
-        if(updatedRouteData.find(route => route.name === 'new')) {
+        if(updatedRouteData.find(route => route._id === objectId || route.name === 'new')){
             console.log('%c%s', 'color: #ff0000', 'FOUND no need to write into file');
         } else {
+            body = {...body, _id: objectId};
             updatedRouteData = [...updatedRouteData, body];
             const fileObj = 'export default ' + JSON.stringify(updatedRouteData);
             fs.chmod(pathToFile, 0o644, (error) => {
