@@ -96,6 +96,8 @@ const processRoutes = (routes = [], socket = {}) => {
         });
 
         socket.on('setTimer', data => {
+            clearInterval(interval);
+            clearTimeout(timeOut);
             if(data) {
                 setRouteInterval(socket, routes);
             }
