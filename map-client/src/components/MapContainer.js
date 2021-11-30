@@ -68,6 +68,21 @@ const MapContainer = ({
 		displaySecondsDropdown, imageUrl, handleMillSelect
 	] = useSocketListenerEvents(socket, 3000, tripTime, coordinates, distanceTime);
 
+	/**
+	 * Set image points.
+	 *
+	 * @return {string}
+	 */
+	const setImage = () => {
+		if(mapData && mapData.features.length) {
+			imageURL = mapData.features.reduce((acc, { properties: { route }}) => {
+				acc = route === 'village' ? '/carmap2.png' : '/human.png';
+				return acc;
+			}, '');
+		}
+		return imageURL;
+	}
+
 	return (
 		<React.Fragment>
 		{loading && data === null ? 
