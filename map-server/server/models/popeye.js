@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import routedata from '../config/routedata';
+
 let Schema = mongoose.Schema;
 
 let PopeyeSchema = new Schema({
@@ -29,8 +31,34 @@ let PopeyeSchema = new Schema({
     }
 }, { retainKeyOrder: true, minimize: false });
 
+
+
 // Sets the created_at parameter equal to the current time
 PopeyeSchema.index({geometry : '2dsphere'});
 const PopeyeRoutes = mongoose.model('popeye', PopeyeSchema);
+
+const importData = () => {
+    PopeyeRoutes.create(routedata, (err, routes) => {
+        if(err) return console.error(err);
+        console.log('%c%s', 'color: #1d5673', 'Data was successfully inported', routes);
+    });
+}
+
+PopeyeRoutes.find({}).then(function(data, error) {
+    if(error) return console.log(error);
+
+    if(data.length) {
+        PopeyeRoutes.deleteMany({}).then((dataDeleted, deleteErr) => {
+            if(deleteErr) console.log(deleteErr);
+            console.log('data was successfully deleted >> ', dataDeleted);
+            importData();
+        })
+    }
+
+    // insert when not data found
+    if(!data.length) {
+        importData();
+    }
+})
 
 export default PopeyeRoutes;
