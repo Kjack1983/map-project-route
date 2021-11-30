@@ -68,6 +68,8 @@ const MapContainer = ({
 		displaySecondsDropdown, imageUrl, handleMillSelect
 	] = useSocketListenerEvents(socket, 3000, tripTime, coordinates, distanceTime);
 
+	console.log(milliseconds)
+
 	/**
 	 * Set image points.
 	 *
@@ -158,8 +160,10 @@ const MapContainer = ({
 						}}
 						input={<Input name="milliseconds" id="milliseconds" />}
 					>
-						<MenuItem selected disabled value=""><em>Please select</em></MenuItem>
-						{displayOptions.map(option => {
+						<MenuItem selected disabled value="">
+							<em>None</em>
+						</MenuItem>
+						{displayOptions.map((option, index) => {
 							return <MenuItem key={option.value} value={option.value}>
 								{option.label}
 							</MenuItem>
