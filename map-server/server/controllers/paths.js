@@ -2,6 +2,7 @@
 // @route GET /api/paths
 // @access public
 import PopeyeRoutes from '../models/popeye';
+import routeData from '../config/routedata';
 import "babel-polyfill";
 import { io } from '../bin/www';
 import moment from 'moment';
@@ -79,6 +80,46 @@ const processRoutes = (routes = [], socket = {}) => {
 }
 
 /**
+ * Stream data to the client.
+ * 
+ * @param {array} routes
+ * @return {void}
+ */
+ const streamData = (routes = []) => {
+    io.once('connection', (socket) => {
+        // process routes.
+        processRoutes(routes, socket);
+
+        socket.on('removeTimer', data => {
+            clearInterval(interval);
+            clearTimeout(timeOut);
+        });
+
+        socket.on('setTimer', data => {
+            if(data) {
+                setRouteInterval(socket, routes);
+            }
+        });
+
+        socket.on('milliseconds', milliseconds => {
+            console.log(`Changed the milliseconds for the delay ${milliseconds}`);
+            delay = milliseconds;
+
+            // Clear interval and reset it.
+            clearInterval(interval);
+            clearTimeout(timeOut);
+            setRouteInterval(socket, routes);
+        });
+
+
+        socket.on('disconnect', () => {
+            clearInterval(interval);
+            clearTimeout(timeOut);
+        });
+    });
+}
+
+/**
  * Fecth all entities.
  *
  * @param {object} req
@@ -89,45 +130,18 @@ export const getPaths = async (req, res, next) => {
     try {
         let popeyes = await PopeyeRoutes.find({});
        
-        if (popeyes) {
+        if (Array.isArray(popeyes) && popeyes.length) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-
-            io.once('connection', (socket) => {
-                // process routes.
-            	processRoutes(popeyes, socket);
-
-				socket.on('removeTimer', data => {
-                    clearInterval(interval);
-                    clearTimeout(timeOut);
-                });
-
-                socket.on('setTimer', data => {
-                    if(data) {
-                        setRouteInterval(socket, popeyes);
-                    }
-                });
-
-                socket.on('milliseconds', milliseconds => {
-                    console.log(`Changed the milliseconds for the delay ${milliseconds}`);
-                    delay = milliseconds;
-
-                    // Clear interval and reset it.
-                    clearInterval(interval);
-                    clearTimeout(timeOut);
-                    setRouteInterval(socket, popeyes);
-                });
-
-
-                socket.on('disconnect', () => {
-                    clearInterval(interval);
-                    clearTimeout(timeOut);
-                });
-            });
+            streamData(popeyes);
             res.status(200).json(popeyes);
             next();
         } else {
-            throw new Error('ERROR: no entities found');
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            streamData(routeData);
+            res.status(200).json(routeData);
+            next();
         }
     } catch(error) {
         next(error);
