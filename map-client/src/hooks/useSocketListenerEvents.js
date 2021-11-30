@@ -167,7 +167,7 @@ export const useSocketListenerEvents = (socket, initialValue, tripTime, coordina
 			let { target: { value } } = event;
 			setMilliseconds(value);
 			setChanged(false);
-
+			socket.emit('removeTimer', true);
 			// Emitting the new interval delay to the server.
 			socket.emit('milliseconds', value);
 		}
