@@ -195,6 +195,28 @@ export const getPaths = async (req, res, next) => {
 /**
  * Add popeye entity
  * 
+ * {
+ *     "route": {
+ *       "geometry": {
+ *         "type": "LineString",
+ *         "coordinates": [
+ *           [
+ *             14.495279788970945,
+ *             35.915087047076575
+ *           ]
+ *         ]
+ *       },
+ *       "type": "Feature",
+ *       "properties": {
+ *         "color": "#33C9EB"
+ *       }
+ *     },
+ *     "_id": "61a65867d324d055d49d5611",
+ *     "name": "new",
+ *     "__v": 0
+ *   }
+ *
+ *
  * @param {object} req 
  * @param {object} res 
  * @param {function} next 
