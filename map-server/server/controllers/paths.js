@@ -361,7 +361,6 @@ export const updatePopeye = async (req, res, next) => {
                 if(error) return console.warn(error);
                 fs.writeFile(pathToFile, fileObj, (err, routeFile) => {
                     if(err) return console.err(err)
-                    console.log(routeFile);
                     console.log('Changed file permissions');
                 });
             });
