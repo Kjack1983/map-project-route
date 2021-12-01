@@ -194,7 +194,7 @@ export const getPaths = async (req, res, next) => {
 
 /**
  * Add popeye entity
- * 
+ * eg:
  * {
  *     "route": {
  *       "geometry": {
@@ -242,17 +242,13 @@ export const addPopeye = async (req, res, next) => {
             });
         }
 
-
         if (Object.keys(popeye).length) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.status(200).json(popeye);
             next();
-        } else if(Object.keys(updatedRouteData).length) {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.status(200).json(updatedRouteData);
-            next();
+        } else {
+            throw new Error('Post not successfull');
         }
     } catch (error) {
         next(error);
