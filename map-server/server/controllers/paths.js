@@ -8,6 +8,9 @@ import "babel-polyfill";
 import { io } from '../bin/www';
 import fs from 'fs';
 import moment from 'moment';
+
+let ObjectID = require('mongodb').ObjectID;
+let objectId = new ObjectID();
 let pathToFile = __dirname.replace('/dist-server/controllers', '/server/config/routedata.js');
 let updatedRouteData = routeData;
 
@@ -134,7 +137,6 @@ const processRoutes = (routes = [], socket = {}) => {
  * @param {function} next
  */
 export const getPaths = async (req, res, next) => {
-    console.log('my Route data >>>>', updatedRouteData)
     try {
         let popeyes = await PopeyeRoutes.find({});
        
@@ -192,7 +194,29 @@ export const getPaths = async (req, res, next) => {
 
 /**
  * Add popeye entity
- * 
+ * eg:
+ * {
+ *     "route": {
+ *       "geometry": {
+ *         "type": "LineString",
+ *         "coordinates": [
+ *           [
+ *             14.495279788970945,
+ *             35.915087047076575
+ *           ]
+ *         ]
+ *       },
+ *       "type": "Feature",
+ *       "properties": {
+ *         "color": "#33C9EB"
+ *       }
+ *     },
+ *     "_id": "61a65867d324d055d49d5611",
+ *     "name": "new",
+ *     "__v": 0
+ *   }
+ *
+ *
  * @param {object} req 
  * @param {object} res 
  * @param {function} next 
@@ -200,11 +224,14 @@ export const getPaths = async (req, res, next) => {
 export const addPopeye = async (req, res, next) => {
     let { body } = req;
     try {
-        // save to file.
-        if(updatedRouteData.find(route => route.name === 'new')) {
-            console.log('%c%s', 'color: #ff0000', 'FOUND no need to write into file');
+
+        let popeye = await PopeyeRoutes.create(body);
+        
+        if(updatedRouteData.find(route => route._id === popeye._id)){
+            console.warn('FOUND no need to write into file')
         } else {
-            updatedRouteData = [...updatedRouteData, body];
+            let updatedBody = {...body, _id: popeye._id};
+            updatedRouteData = [...updatedRouteData, updatedBody];
             const fileObj = 'export default ' + JSON.stringify(updatedRouteData);
             fs.chmod(pathToFile, 0o644, (error) => {
                 fs.writeFile(pathToFile, fileObj, (err, routeFile) => {
@@ -215,18 +242,13 @@ export const addPopeye = async (req, res, next) => {
             });
         }
 
-        let popeye = await PopeyeRoutes.create(body);
-
         if (Object.keys(popeye).length) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.status(200).json(popeye);
             next();
-        } else if(Object.keys(updatedRouteData).length) {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.status(200).json(updatedRouteData);
-            next();
+        } else {
+            throw new Error('Post not successfull');
         }
     } catch (error) {
         next(error);
@@ -237,11 +259,11 @@ export const deletePopeye = async (req, res, next) => {
     let { id } = req.params;
 
     try {
-        // Should be the id but we are doing it for demonstrated purposes here.
-        updatedRouteData = updatedRouteData.filter(route => route.name !== 'new');
+        updatedRouteData = updatedRouteData.filter(route => route._id !== id);
         const fileObj = 'export default ' + JSON.stringify(updatedRouteData);
 
         fs.chmod(pathToFile, 0o644, (error) => {
+            if(error) return console.warn(error);
             fs.writeFile(pathToFile, fileObj, (err, routeFile) => {
                 if(err) return console.err(err)
                 console.log('File was successfully stored');
@@ -270,21 +292,79 @@ export const deletePopeye = async (req, res, next) => {
 }
 
 /**
- * Update entity.
+ * Update Route.
  * 
  * @param {object} req 
  * @param {object} res 
  * @param {function} next 
  */
 export const updatePopeye = async (req, res, next) => {
-    let { id } = req.params;
+    let { params: { id }, body } = req;
 
     try {
+
         // Find By id and remove.
-        await PopeyeRoutes.findByIdAndUpdate({_id: id}, req.body);
+        await PopeyeRoutes.findByIdAndUpdate({_id: id}, body);
+
         let popeye = await PopeyeRoutes.findOne({_id: id});
-        
+
         if (popeye) {
+
+            // find the route to be updated.
+            let foundRoute = updatedRouteData.find(route => route._id === id);
+
+            // Add id to the body.
+            body = { ...body, _id: popeye._id }
+
+            let bodyGeometry = typeof body.route.geometry !== 'undefined' && 
+                            Object.keys(body.route.geometry).length ?
+                            body.route.geometry : 
+                            foundRoute.route.geometry;
+
+            let bodyType = typeof body.route.type !== 'undefined' &&
+                            typeof body.route.type !== '' ?
+                            body.route.type :
+                            foundRoute.route.type
+
+            let bodyProperties = typeof body.route.properties !== 'undefined' &&
+                            Object.keys(body.route.properties).length ?
+                            body.route.properties :
+                            foundRoute.route.properties;
+
+            let bodyName = typeof body.name !== 'undefined' &&
+                            typeof body.name !== '' ?
+                            body.name :
+                            foundRoute.name
+
+            // Replace old values with new for the found route.
+            foundRoute = {
+                ...foundRoute,
+                route: {
+                    geometry: bodyGeometry,
+                    type: bodyType,
+                    properties: bodyProperties
+                },
+                name: bodyName,
+                __v: 0,
+                _id: body._id,
+            };
+
+            // remove the old route
+            updatedRouteData = updatedRouteData.filter(route => route._id !== id);
+
+            // merge the foundRoute.
+            updatedRouteData = [...updatedRouteData, foundRoute];
+
+            // Update properties.
+            const fileObj = 'export default ' + JSON.stringify(updatedRouteData);
+            fs.chmod(pathToFile, 0o644, (error) => {
+                if(error) return console.warn(error);
+                fs.writeFile(pathToFile, fileObj, (err, routeFile) => {
+                    if(err) return console.err(err)
+                    console.log('Changed file permissions');
+                });
+            });
+
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.status(200).json(popeye);
